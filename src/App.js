@@ -27,7 +27,28 @@ const app = new Clarifai.App({
 class App extends Component {
   state = {
     input: '',
-    imageUrl: ''
+    imageUrl: '',
+    box: {}
+  }
+
+  calculateFaceLocation = data => {
+    const clarifaiFace = data.outputs[0].data.regions[0].region_info.bounding_box
+    const image = document.getElementById('inputimage')
+    const width = Number(image.width)
+    const height = Number(image.height)
+    return {
+      leftCol: clarifaiFace.left_col * width,
+      topRow: clarifaiFace.top_row * height,
+      rightCol: width - clarifaiFace.right_col * width,
+      bottomRow: height - clarifaiFace.bottom_row * height
+    }
+  }
+
+  displayFaceBox = box => {
+    console.log(box)
+    this.setState({
+      box
+    })
   }
 
   onInputChange = e => this.setState({
@@ -41,9 +62,8 @@ class App extends Component {
     app.models.predict(
       Clarifai.FACE_DETECT_MODEL,
       this.state.input)
-    .then(res => console.log(res.outputs[0].data.regions[0].region_info.bounding_box))
+    .then(res => this.displayFaceBox(this.calculateFaceLocation(res)))
     .catch(console.log)
-
   }
   
   render() {
@@ -58,7 +78,7 @@ class App extends Component {
         <ImageLinkForm 
         onInputChange={this.onInputChange} 
         onButtonSubmit={this.onButtonSubmit} />
-        <FaceReognition imageUrl={this.state.imageUrl}/>
+        <FaceReognition box={this.state.box} imageUrl={this.state.imageUrl}/>
       </div>
     );
   }
