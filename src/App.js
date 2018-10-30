@@ -79,7 +79,8 @@ class App extends Component {
       route
     })
   }
-  
+
+
   render() {
    const { isSignedIn, imageUrl, route, box } = this.state;
     return (
