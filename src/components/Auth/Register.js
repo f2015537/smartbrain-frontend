@@ -12,7 +12,7 @@ class Register extends Component {
     })}
 
     handleSubmit = e => {
-        fetch('http://localhost:3000/register', {
+        fetch('https://stormy-depths-53547.herokuapp.com/register', {
             method: 'POST',
             headers: {
                 "Content-Type": "application/json"
